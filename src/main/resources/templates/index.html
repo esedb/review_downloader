@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Comments | Review Downloader</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+<!--===============================================================================================-->
+</head>
+<body>
+
+
+	<div class="container-contact100" style="background-image: url('images/bg-01-3.jpg');">
+		<div class="wrap-contact100">
+			<form id="file_form" class="contact100-form validate-form">
+				<div class="wrap-input100">
+					<span class="label-input100">Input URL to get Customer Reviews</span>
+					<input class="input100" type="text" placeholder="https://www.youtube.com/watch?v=mGK86tWMFjk" id = "url">
+					
+					<span class="label-input100" id="error" style ="color:red; visibility:hidden"></span>
+					
+				</div>
+
+				<div class="container-contact100-form-btn" id="btn">
+					<div class="wrap-contact100-form-btn">
+						<div class="contact100-form-bgbtn"></div>
+						<button id = "btn" class="contact100-form-btn">
+							Download
+						</button>						
+					</div>
+					
+				</div>
+				<span class="label-input100" id="d_link" style ="color:red; visibility:hidden"></span>
+			</form>
+			
+			<span class="label-input100" id="status" style ="color:red; visibility:show">Currently no task!</span>
+		</div>
+
+		
+	</div>
+	<script type="text/javascript">
+		
+		function prevdef(){
+			var btn = document.getElementById("btn");
+			btn.onclick= function(e){
+				e.preventDefault();
+				var url = document.getElementById("url").value;
+				var obj = {
+						"url": url
+				}
+				var formData = JSON.stringify(obj);
+								
+				var req = new XMLHttpRequest();
+				req.open("POST", "/reviews" + "", true);
+				req.setRequestHeader("Content-Type", "application/json");				  
+				req.responseType = "application/json";
+				document.getElementById("status").innerHTML = "Downloading...";
+				req.onload = function (e) {					
+					var json_str = JSON.parse(req.response);					
+					var filename  = json_str.filename;
+					if(isNull(filename)){			
+						document.getElementById("status").innerHTML = "Failed";
+						var error_message = json_str.message;						
+						var error_element = document.getElementById("error");
+						
+						var e_message = document.createTextNode(error_message);
+						
+						error_element.appendChild(e_message);
+						error_element.setAttribute("style", "visibilty:show;color:red");
+						error_element.appendChild(document.createElement("br"));
+						return;								
+					}
+					var d_link = document.getElementById("d_link")
+					var link=document.createElement('a');		
+					link.href = "/download/" + filename;
+					link.setAttribute("id", filename + "_");
+					link.setAttribute("style", "color:blue");
+					var textnode = document.createTextNode(filename);
+					link.appendChild(textnode);
+					var br = document.createElement("br");
+					
+					d_link.appendChild(link);
+					d_link.appendChild(br);
+					d_link.setAttribute("style","visibility:show");
+					document.getElementById("status").innerHTML = "Completed Download...";
+					link.onclick = download();
+					
+					
+				};
+
+				  req.send(formData);
+				
+			}
+			
+		}
+		function download(){
+			var link = document.getElementById("file_link");
+			var file_name = link.value;
+			link.onclick = function(e){				
+				e.preventDefault();
+				var req = new XMLHttpRequest();
+				req.open("GET", "/download/" + filename, true);
+				req.setRequestHeader("Content-Type", "application/json");
+				req.responseType = "blob";	
+				req.onload = function (event) {
+					var blob = req.response;
+					var d_link = document.getElementById("d_link")
+					var link=document.getElementById('a_link');					  
+					link.href=window.URL.createObjectURL(blob);
+					link.download="review_comment" + new Date() + ".csv";				    
+					d_link.appendChild(link);
+					d_link.setAttribute("style","visibility:show");
+					link.click();
+				};
+				
+			}
+			
+		}
+		function isNull(value){
+			if(value == undefined || value == '' || value == "undefined" || value == null){
+				return true;
+			}
+			return false;
+		}
+		prevdef();
+		
+	</script>
+
+
+
+	<div id="dropDownSelect1"></div>
+
+<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+</body>
+</html>
