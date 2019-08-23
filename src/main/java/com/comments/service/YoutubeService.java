@@ -49,8 +49,7 @@ public class YoutubeService implements CommentService {
     }
     
     /* It perform the major computing to get youtube comments
-     * it uses the youtube library
-     * the returned comments size have a maximum size of 500
+     * it uses the youtube library     
      */
     public List<CommentBean> process(String url) {
     	   	

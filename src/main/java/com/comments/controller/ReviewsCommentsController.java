@@ -63,7 +63,7 @@ public class ReviewsCommentsController {
 			    	  throw new CustomNotFoundException("The file you requested for does not exist", null);			    	  
 			      }
 			      HttpHeaders headers = new HttpHeaders();
-			      headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			      //headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 			      response.setHeader("Content-disposition", "attachment; filename=" + filename);
 			      InputStreamResource resource = null;
 			      try{

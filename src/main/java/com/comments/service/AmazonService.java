@@ -11,13 +11,10 @@ import com.comments.beans.CommentBean;
 
 public class AmazonService implements CommentService {	
 	
-	/* It perform the major computing to get amazon customer reviews
-     * it derives customer reviews through web scraping techniques
-     * it uses the Jsoup library for node transversal.
-     * the returned customer review have a maximum size of 500
-     * the returned reviews is not dependent on session since it is exposed freely
-     * by amazon without authentication or session time allocation.
-     */
+	/* This is the main worker of the service it
+	 * the reviews... it use the Jsoup library for 
+	 * URL Connecitons.
+	 */
 	public List<CommentBean> process(String user_url) {
 		List<CommentBean> comments = new ArrayList<>();
 		
